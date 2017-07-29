@@ -1,9 +1,10 @@
 {
     "test": {
         "type": "html",
-        "body": "something new <div style='background-color: blue;'>Heyyy</div> for Meeegan!"
+        "backgroundColor": "blue",
+        "body": "Something new <div style='background-color: teal;'>Heyyy</div> for Reaaaal!"
     },
     "test2": "something else was afoot",
-    "title": "Megan",
+    "title": "I am a title!",
     "lorem": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptas eius quae sed quis ipsa itaque, commodi neque inventore officiis quaerat et, provident libero? Ullam excepturi dolorem eveniet autem nesciunt debitis!"
 }

@@ -1,28 +1,34 @@
-var doRequest = function (callback) {
-    var url = "./data.json";
+URL = "./data.json";
 
+var doRequest = function (callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
-    xobj.open('GET', url, true);
+    xobj.open('GET', URL, true);
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            // console.log(xobj.responseText);
             callback(xobj.responseText);
         }
     };
     xobj.send(null);
 }
+var checkVar = function (value, obj, el) {
+    if (value == "body") {
+        eval("el.innerHTML = obj." + value);
+    } else {
+        if (eval("obj." + value) != undefined) {
+            eval("el.style." + value + "= obj." + value);
+        }
+    }
+}
 var handleAttributes = function (obj, el) {
     if (obj.type == "html") {
-        el.innerHTML = obj.body;
+        // Add function to get all the variables avaliable
+        checkVar("body", obj, el);
+        checkVar("backgroundColor", obj, el);
     } else {
         el.innerText = obj;
         return;
-    }
-
-    if (obj.color != undefined) {
-        el.style.backgroundColor = obj.color;
     }
 }
 var replace = function (data) {
@@ -37,11 +43,11 @@ var replace = function (data) {
         }
     }
 }
-var getThem = function () {
+var getData = function () {
     doRequest(function (response) {
         var actual_JSON = JSON.parse(response);
         //console.log(actual_JSON);
         replace(actual_JSON);
     });
 }
-getThem();
+getData();
