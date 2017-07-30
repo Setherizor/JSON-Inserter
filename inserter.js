@@ -12,33 +12,35 @@ var doRequest = function (callback) {
     };
     xobj.send(null);
 }
-var checkVar = function (value, obj, el) {
+var apply = function (value, obj, el) {
     if (value == "body") {
         eval("el.innerHTML = obj." + value);
     } else {
-        if (eval("obj." + value) != undefined) {
-            eval("el.style." + value + "= obj." + value);
+        if (eval("obj.style." + value) != undefined) {
+            eval("el.style." + value + "= obj.style." + value);
         }
     }
 }
 var handleAttributes = function (obj, el) {
     if (obj.type == "html") {
-        // Add function to get all the variables avaliable
-        checkVar("body", obj, el);
-        checkVar("backgroundColor", obj, el);
+        apply("body", obj, el);
+        for (var i = 0; i < Object.keys(obj.style).length; i++) {
+            var curr = Object.keys(obj.style)[i];
+            apply(curr, obj, el);
+        }
     } else {
         el.innerText = obj;
         return;
     }
 }
-var replace = function (data) {
-    var length = Object.keys(data).length;
+var applyData = function (json) {
+    var length = Object.keys(json).length;
     for (var i = 0; i < length; i++) {
-        var currName = Object.keys(data)[i];
+        var currName = Object.keys(json)[i];
         var elements = document.getElementsByName(currName);
         if (elements[0] != undefined) {
             for (var j = 0; j < elements.length; j++) {
-                handleAttributes(data[currName], elements[j])
+                handleAttributes(json[currName], elements[j])
             }
         }
     }
@@ -46,8 +48,7 @@ var replace = function (data) {
 var getData = function () {
     doRequest(function (response) {
         var actual_JSON = JSON.parse(response);
-        //console.log(actual_JSON);
-        replace(actual_JSON);
+        applyData(actual_JSON);
     });
 }
 getData();
