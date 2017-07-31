@@ -6,7 +6,7 @@ var doRequest = function (callback) {
   xobj.open('GET', URL, true)
   xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === 200) {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+      // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
       callback(xobj.responseText)
     }
   }
@@ -24,9 +24,11 @@ var apply = function (value, obj, el) {
 var handleAttributes = function (obj, el) {
   if (obj.type === 'html') {
     apply('body', obj, el)
-    for (var i = 0; i < Object.keys(obj.style).length; i++) {
-      var curr = Object.keys(obj.style)[i]
-      apply(curr, obj, el)
+    if (obj.style !== undefined) {
+      for (var i = 0; i < Object.keys(obj.style).length; i++) {
+        var curr = Object.keys(obj.style)[i]
+        apply(curr, obj, el)
+      }
     }
   } else {
     el.innerText = obj
