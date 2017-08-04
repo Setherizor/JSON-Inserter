@@ -1,55 +1,71 @@
 const URL = './data.json'
 
-var doRequest = function (callback) {
-  var xobj = new XMLHttpRequest()
-  xobj.overrideMimeType('application/json')
-  xobj.open('GET', URL, true)
-  xobj.onreadystatechange = function () {
-    if (xobj.readyState === 4 && xobj.status === 200) {
-      // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-      callback(xobj.responseText)
-    }
-  }
-  xobj.send(null)
+/**
+ * Decouples map function so we can use it more cleverly
+ * @param {Function} f
+ * @param {Thing to Iterate over} x
+ */
+const map = x => f => Array.prototype.map.call(x, f)
+
+/**
+ * Uses Fetch API to make a request to given url
+ * Converts data into JSON, then returns data
+ * @param {Function} callback
+ * @param {String} url
+ */
+const generalRequest = (callback, url) => {
+  fetch(url)
+    .then((resp) => resp.json())
+    .then((data) => callback(data))
 }
-var apply = function (value, obj, el) {
-  if (value === 'body') {
-    el.innerHTML = obj[value]
-  } else {
-    if (obj.style[value] !== undefined) {
-      el.style[value] = obj.style[value]
-    }
-  }
+/**
+ * Either applies CSS Styles, or inserts body into element
+ * @param {String} value
+ * @param {JSON Object} obj
+ * @param {DOM Element} el
+ * @param {Obj Styles} ostyles
+ */
+const apply = function (value, obj, el, ostyles) {
+  (value === 'body')
+    ? el.innerHTML = obj[value]
+    : el.style[value] = ostyles[value]
 }
-var handleAttributes = function (obj, el) {
-  if (obj.type === 'html') {
+/**
+ * Inserts body, checks for styles, then applys them if they exist
+ * Undefined Styles Check with default case
+ * @param {Object} obj
+ * @param {Element} el
+ */
+const handleAttributes = function (obj, el) {
+  const fancyAttributes = (obj) => {
+    const styles = obj.style || {
+      'backgroundColor': 'Beige ',
+      'width': 'inherit',
+      'fontWeight': '900'
+    }
     apply('body', obj, el)
-    if (obj.style !== undefined) {
-      for (var i = 0; i < Object.keys(obj.style).length; i++) {
-        var curr = Object.keys(obj.style)[i]
-        apply(curr, obj, el)
-      }
-    }
-  } else {
-    el.innerText = obj
+    const keys = Object.keys(styles)
+    map(keys)((item) => {
+      apply(item, obj, el, styles)
+    })
   }
+  (obj.type === 'html') ? fancyAttributes(obj) : el.innerText = obj
 }
-var applyData = function (json) {
-  var length = Object.keys(json).length
-  for (var i = 0; i < length; i++) {
-    var currName = Object.keys(json)[i]
-    var elements = document.getElementsByName(currName)
-    if (elements[0] !== undefined) {
-      for (var j = 0; j < elements.length; j++) {
-        handleAttributes(json[currName], elements[j])
-      }
-    }
-  }
-}
-var getData = function () {
-  doRequest(function (response) {
-    var actual = JSON.parse(response)
-    applyData(actual)
+/**
+ * Uses JSON to get elements with same "name"
+ * Then maps each element from each "name"
+ * @param {JSON} json
+ */
+const applyData = function (json) {
+  const els = (x) => document.getElementsByName(x)
+  map(Object.keys(json))((key) => {
+    map(els(key))((element) => {
+      handleAttributes(json[key], element)
+    })
   })
 }
+
+// Final function to run everything
+const getData = () => generalRequest((response) => applyData(response), URL)
+
 getData()
