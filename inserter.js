@@ -39,7 +39,7 @@ const apply = function (value, obj, el, ostyles) {
 const handleAttributes = function (obj, el) {
   const fancyAttributes = (obj) => {
     const styles = obj.style || {
-      'backgroundColor': 'Beige ',
+      'backgroundColor': 'Beige',
       'width': 'inherit',
       'fontWeight': '900'
     }
