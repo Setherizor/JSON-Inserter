@@ -25,7 +25,7 @@ const generalRequest = (callback, url) => {
  * @param {DOM Element} el
  * @param {Obj Styles} ostyles
  */
-const apply = (value, obj, el, ostyles) {
+const apply = (value, obj, el, ostyles) => {
   (value === 'body')
     ? el.innerHTML = obj[value]
     : el.style[value] = ostyles[value]
