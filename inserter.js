@@ -25,7 +25,7 @@ const generalRequest = (callback, url) => {
  * @param {DOM Element} el
  * @param {Obj Styles} ostyles
  */
-const apply = function (value, obj, el, ostyles) {
+const apply = (value, obj, el, ostyles) {
   (value === 'body')
     ? el.innerHTML = obj[value]
     : el.style[value] = ostyles[value]
@@ -36,7 +36,7 @@ const apply = function (value, obj, el, ostyles) {
  * @param {Object} obj
  * @param {Element} el
  */
-const handleAttributes = function (obj, el) {
+const handleAttributes = (obj, el) => {
   const fancyAttributes = (obj) => {
     const styles = obj.style || {
       'backgroundColor': 'Beige',
@@ -56,7 +56,7 @@ const handleAttributes = function (obj, el) {
  * Then maps each element from each "name"
  * @param {JSON} json
  */
-const applyData = function (json) {
+const applyData = (json) => {
   const els = (x) => document.getElementsByName(x)
   map(Object.keys(json))((key) => {
     map(els(key))((element) => {
